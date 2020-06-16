@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cafe24.choiyooq1.mapper.TestSystemCodeMapper">
+<resultMap id="TestSystemCodeResultMap" type="com.cafe24.choiyooq1.domain.SystemCodeDTO">
+    	<result property="plant" column="PLANT"/>
+    	<result property="tableName" column="TABLE_NAME"/>
+    	<result property="description" column="DESCRIPTION"/>
+    	<result property="formatType" column="FORMAT_TYPE"/>
+    	<result property="decimalLength" column="DECIMAL_LENGTH"/>
+    	<result property="sizeLimit" column="SIZE_LIMIT"/>
+    	<result property="countOfCategory" column="countOfCategory"/>
+</resultMap>
+<resultMap id="SystemCodeDateResultMap" type="com.cafe24.choiyooq1.domain.SystemCodeDataDTO">
+    	<result property="plant" column="PLANT"/>
+    	<result property="tableName" column="TABLE_NAME"/>
+    	<result property="codeName" column="CODE_NAME"/>
+    	<result property="codecount" column="CODE_SEQ"/>
+    	<result property="description" column="DESCRIPTION"/>
+    	<result property="codebrand" column="CODE_GROUP1"/>
+    	<result property="codeprice" column="CODE_GROUP2"/>
+    	<result property="codecolor" column="CODE_GROUP3"/>
+</resultMap>
+
+
+	<!-- 상품 삭제 -->
+	<delete id="deleteProduct" parameterType="String">
+		delete TEST_SYSTEM_CODE_DATA where PLANT = #{category} and TABLE_NAME = #{tableName} and CODE_NAME = #{codeName}
+	</delete>
+	<!-- 상품 업데이트 -->
+	<update id="updateProduct">
+	    <foreach collection="list" item="list" index="index"  separator=";" open="DECLARE BEGIN" close="; END;" >
+	        update TEST_SYSTEM_CODE_DATA
+	        SET 
+		        CODE_NAME = '${list.codeName}',
+		        CODE_SEQ = ${list.codecount},
+		        DESCRIPTION = '${list.description}',
+		        CODE_GROUP1 = '${list.codebrand}',
+		        CODE_GROUP2 = '${list.codeprice}',
+		        CODE_GROUP3 = '${list.codecolor}'
+        	where 
+	        	plant = '${list.plant}' and table_name = '${list.tableName}' and code_name= '${list.realCodeName}'
+	    </foreach>
+	</update>
+	<!-- 상품검색 가격으로 -->
+	<select id="searchProductByPrice" parameterType="String" resultMap="SystemCodeDateResultMap">
+	select 
+		PLANT,
+		TABLE_NAME,
+		CODE_NAME,CODE_SEQ,
+		DESCRIPTION,CODE_GROUP1,CODE_GROUP2,CODE_GROUP3 from TEST_SYSTEM_CODE_DATA 
+		where PLANT = #{category} and TABLE_NAME = #{tableName} and TO_NUMBER(${sk}) <![CDATA[ >= ]]> ${svprice1} and TO_NUMBER(${sk}) <![CDATA[ <= ]]> ${svprice2}
+	</select>
+	<!-- 상품검색 -->
+	<select id="searchProduct" parameterType="String" resultMap="SystemCodeDateResultMap">
+	select
+		PLANT,
+		TABLE_NAME,
+		CODE_NAME,CODE_SEQ,
+		DESCRIPTION,CODE_GROUP1,CODE_GROUP2,CODE_GROUP3 from TEST_SYSTEM_CODE_DATA 
+		where PLANT = #{category} and TABLE_NAME = #{tableName} and ${sk} like '%'||#{sv}||'%'
+	</select>
+	
+	<!-- 상품출고 -->
+	<update id="outProductCount" parameterType="SystemCodeDataDTO">
+		update 
+			TEST_SYSTEM_CODE_DATA
+		set 
+			CODE_SEQ = CODE_SEQ -#{codecount}
+		where 
+			CODE_NAME = #{codeName} and 
+			TABLE_NAME = #{tableName} and 
+			PLANT = #{plant} 
+	</update>
+	<!-- 상품입고 -->
+	<update id="insertProducCount" parameterType="SystemCodeDataDTO">
+		update 
+			TEST_SYSTEM_CODE_DATA
+		set 
+			CODE_SEQ = CODE_SEQ +#{codecount}
+		where 
+			CODE_NAME = #{codeName} and 
+			TABLE_NAME = #{tableName} and 
+			PLANT = #{plant} 
+	</update>
+	<!-- 중분류 설명 수정 -->
+	<update id="updateMiddleCategoryDesc" parameterType="SystemCodeDTO">
+		update TEST_SYSTEM_CODE
+			set  DESCRIPTION = #{description}
+		where TABLE_NAME = #{originalTableName} and PLANT = #{plant}
+	</update>
+
+	<!-- 소분류 리스트 -->
+	<select id="getProductList" parameterType="String" resultMap="SystemCodeDateResultMap">
+		select 
+			PLANT,TABLE_NAME,CODE_NAME,CODE_SEQ,DESCRIPTION,CODE_GROUP1,CODE_GROUP2,CODE_GROUP3 
+		from  
+			TEST_SYSTEM_CODE_DATA 
+		where 
+			TABLE_NAME = #{tableName} 
+		and 
+			PLANT = #{category}
+	</select>
+	
+	<select id="countPlant" resultType="int">
+		select 
+			count(*) 
+		from 
+			TEST_SYSTEM_CODE 
+		where 
+			plant = #{category} 
+		group by 
+			plant
+	</select>
+
+	<!-- 중분류 삭제 메서드 -->
+	<delete id="deleteMiddleCate" parameterType="SystemCodeDTO">
+		delete from TEST_SYSTEM_CODE where TABLE_NAME = #{tableName} and PLANT = #{plant}
+	</delete>
+	
+	<!-- 중분류 리스트 및 설명 -->
+	<select id="getMiddleCate" parameterType="String" resultMap="TestSystemCodeResultMap">
+		select 
+			TABLE_NAME,description 
+		from 
+			TEST_SYSTEM_CODE 
+		where 
+			plant = #{category}
+	</select>
+	
+	<!-- 큰 카테고리 전체 리스트 -->
+	<select id="getBigCategoryList" resultMap="SystemCodeDateResultMap">
+		select 
+			PLANT , TABLE_NAME 
+		from 
+			TEST_SYSTEM_CODE 
+		order by PLANT, TABLE_NAME
+	</select>
+	
+	<!-- 상품등록 -->
+	<insert id="insertProduct" parameterType="SystemCodeDataDTO">
+		insert into 
+			TEST_SYSTEM_CODE_DATA 
+		(PLANT,TABLE_NAME,CODE_NAME,CODE_SEQ,DESCRIPTION,CODE_GROUP1,CODE_GROUP2,CODE_GROUP3)
+        values
+        (#{plant},#{tableName},#{codeName},#{codecount},#{description},#{codebrand},#{codeprice},#{codecolor})
+	</insert>
+	
+	<!-- 중분류 각리스트 가져오기 -->
+	<select id="getListOfMiddlcate" parameterType="String" resultMap="TestSystemCodeResultMap">
+		select 
+			a.TABLE_NAME,
+			count(c.TABLE_NAME) as countOfCategory
+		from 
+			TEST_SYSTEM_CODE a
+		left join 
+			TEST_SYSTEM_CODE_DATA c
+		on 
+			a.TABLE_NAME = c.TABLE_NAME 
+		and 
+			a.PLANT = c.PLANT
+		where 
+			a.PLANT = #{category}
+		group by 
+			a.TABLE_NAME
+	</select>
+	
+	<!-- 큰 카테고리 입력 -->
+	<insert id="insertBigCategory">
+		<foreach collection="list" item="item" separator=" " open="INSERT ALL" close="SELECT * FROM DUAL">
+			into 
+				TEST_SYSTEM_CODE 
+				(PLANT,TABLE_NAME,DESCRIPTION)
+			values
+			('${item.plant}','${item.tableName}','${item.description}')
+		</foreach>
+	</insert>
+	
+	<!-- 큰 카테고리 리스트  -->
+	<select id="getBigCategory" resultMap="TestSystemCodeResultMap">
+		select 
+			PLANT 
+		from 
+			TEST_SYSTEM_CODE 
+		group by 
+			PLANT 
+		order by 
+			count(PLANT) desc
+	</select>
+</mapper>

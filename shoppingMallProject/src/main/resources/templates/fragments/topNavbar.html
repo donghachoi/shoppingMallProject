@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="container">
+	<div id="top" th:fragment="topNavbarFragment">
+		<nav class="navbar navbar-default navbar-expand-sm navbar-expand-md">
+		  <div class="container-fluid">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+	      	<a class="navbar-brand" href="/getMainPage">IBS_ERP</a>
+		    <!-- Collect the nav links, forms, and other content for toggling -->
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav">
+		        <li class="dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">카테고리  바로가기<span class="glyphicon glyphicon-plus"></span></a>
+		          <ul class="dropdown-menu" role="menu">
+		          <th:block>
+		            <li><a th:href="@{getdetailOfProduct(category=${mc.plant},tableName=${mc.tableName})}" th:each="mc : ${middlCa}" th:text="|${mc.tableName}  (${mc.countOfCategory})|"></a></li>
+		          </th:block>
+		          </ul>
+		        </li>
+		      </ul>
+		    <th:block th:unless="${session['LoginId']==null}">
+			    <img id="profileImage" th:src="${session['profileImage']}" width="50" height="50" 
+			    	style="	border-radius: 30px;
+							-moz-border-radius: 30px;
+							-khtml-border-radius: 30px;
+							-webkit-border-radius: 30px;">
+				<p class="navbar-text" th:text="${session['LoginId'] + '회원님 로그인중 '}" style="color:black;"></p>	
+				<span id="time"style="color: black;">0 : 00 : 00</span><span style="color: black;">후 로그아웃</span>
+				</th:block>
+		      <ul class="nav navbar-nav navbar-right">
+		        <li><a th:href="@{/Insertproduct(category=${category})}">상품등록</a></li>
+		      </ul>
+		    </div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+	</div>
+</div>
+</html>

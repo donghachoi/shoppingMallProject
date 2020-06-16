@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default2}">
+<th:block layout:fragment="customHead">
+<style>
+	
+</style>
+</th:block>
+
+<th:block layout:fragment="customContents">
+<div class="container">
+<div class="row">
+		<legend>대분류(<span id="category" th:text="${category}"></span>) 및 중분류 관리화면</legend>
+		
+			<!-- 대분류 -->
+			<div class="form-group">
+				<div class="col-lg-12 col-md-12">
+				  	<h1 th:text="${category}" style="text-align: center;"></h1>
+				</div>
+			</div>
+			<!-- 하나의 중분류 묶음 -->
+			
+			<th:block th:each="md : ${md}">
+					<!-- 중분류  종류-->
+				<form action="updateMiddleCategory" method="post">
+					<div class="middlecate">
+						<div class="form-group">
+							<label class="col-lg-3 col-md-3 control-label" for="plant">중분류 이름</label>  
+							<div class="col-lg-8 col-md-8">
+								<input type="hidden"  name="plant" th:value="${category}">
+								<input type="hidden"  name="originalTableName" th:value="${md.tableName}">
+							  	<input type="text"    name="tableName"	class="form-control input-md" th:value="${md.tableName}" readonly="readonly">
+							</div>
+						</div>
+						<!-- 중분류 설명 -->
+						<div class="form-group">
+							<label class="col-lg-3 col-md-3 control-label" for="description">중분류 설명</label>
+							<div class="col-lg-7 col-md-7">                     
+								<textarea class="form-control" name="description" th:text="${md.description}"></textarea>
+							</div>
+							<div class="col-lg-1 col-md-1">
+								<button type="button" class="btn btn-danger right btn-sm delete" >분류삭제</button>
+								<button type="submit" class="btn btn-warning right btn-sm update">설명수정</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</th:block>
+
+</div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+
+		//삭제 했을떄 이쪽으로
+		/*<![CDATA[*/
+		var result = /*[[ ${result} ]]*/;
+		var category = /*[[ ${category} ]]*/;
+		var tableName = /*[[ ${tableName} ]]*/;
+		/*]]*/
+		if(result != null){
+			
+			if(result=="마지막 중분류입니다. 삭제하면 대분류도 삭제됩니다. 정말 삭제하시겠습니까?"){
+				if(confirm(result)){
+					url = "/deleteMiddleCategory?category="+category+"&tableName="+tableName;
+					window.location.href = url;
+				}
+			}else{
+				alert(result)
+			}
+		}
+	$(function(){
+		
+		//삭제 script
+		var map = {};
+		$('.delete').click(function(){
+			map.tableName = $(this).parents('.middlecate').find('input[name="originalTableName"]').val();
+			map.originalTableName = $(this).parents('.middlecate').find('input[name="tableName"]').val();
+			if(confirm("정말 삭제하시겠습니까? 삭제하면 중분류 아래 상품들까지 전부 삭제됩니다.")){
+				var url = "/deleteMiddleCategorychech?category="+category+"&tableName="+map.tableName;
+				window.location.href = url;
+			}else{
+				return false;
+			}
+		});
+		
+
+	})
+</script>
+</th:block>
+
+
+<th:block layout:fragment="customPlugin">
+</th:block>
+</html>

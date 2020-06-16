@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default2}">
+<th:block layout:fragment="customHead">
+<style>
+	dl{
+   list-style:none;
+   }
+   .center-block{
+    display: block;
+  margin-left: auto;
+  margin-right: auto;
+   }
+</style>
+</th:block>
+<th:block layout:fragment="customContents">
+    <script src="jquery/kakaoSDK.js"></script>
+	<th:block th:each="bc : ${bigCategory}">
+	<div class="container">
+		<div class="row">
+		 <div class="col-lg-12 col-md-4">
+		    <div class="thumbnail">
+		      <div class="caption">
+		        <h3 th:text="${bc.plant}"></h3>
+		        <p>
+		        	<a th:href="@{/middlecategory(category=${bc.plant})}" class="btn btn-primary" role="button">[[${bc.plant}]] 상세보기</a>
+		         	<a th:href="@{/updateBigcategory(category=${bc.plant})}" class="btn btn-default" role="button">[[${bc.plant}]] 관리</a>
+		        </p>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	</div>
+	</th:block>
+ </head>
+<script type='text/javascript'>
+	var accsetoken = sessionStorage.getItem("accessToken");
+	console.log(accsetoken);
+</script>
+
+</th:block>
+<th:block layout:fragment="customPlugin">
+</th:block>
+</html>

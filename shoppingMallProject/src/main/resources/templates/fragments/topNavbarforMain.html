@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+
+<div class="container">
+	<div id="top" th:fragment="topNavbarFragment">
+		<nav class="navbar navbar-dark navbar-expand-sm navbar-expand-md">
+		  <div class="container-fluid">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+	      	<a class="navbar-brand" href="/getMainPage">IBS_ERP</a>
+		    <!-- Collect the nav links, forms, and other content for toggling -->
+		    <div class="collapse navbar-collapse" >
+			    <th:block th:unless="${session['LoginId']==null}">
+			    <img id="profileImage" th:src="${session['profileImage']}" width="50" height="50" 
+			    	style="	border-radius: 30px;
+							-moz-border-radius: 30px;
+							-khtml-border-radius: 30px;
+							-webkit-border-radius: 30px;">
+				<p class="navbar-text" th:text="${session['LoginId'] + '회원님 로그인중 '}" style="color:white;"></p>	
+				<span id="time"style="color: white;">0 : 00 : 00</span><span style="color: white;">후 로그아웃</span>
+				</th:block>
+			    	<ul class="nav navbar-nav navbar-right">
+			      	<th:block th:unless="${session['LoginId']==null}">
+				        <li><a href="/logout" type="button" class="btn btn btn-danger">로그아웃</a></li>
+				        <li><a href="/InsertBigCategoryPage" class="list">대분류 및 중분류 추가</a></li>
+				        <li><a href="/ListOfBigCategoty" class="list">대분류 관리</a></li>
+		       		</th:block>	
+		      		</ul>
+		    </div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+	</div>
+</div>
+<h1 th:></h1>
+
+</html>

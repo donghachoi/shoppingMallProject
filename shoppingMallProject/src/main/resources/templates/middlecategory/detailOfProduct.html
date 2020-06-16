@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<th:block layout:fragment="customHead">
+
+</th:block>
+<th:block layout:fragment="customContents">
+	<div class="container">
+		<div class="row">
+		<form action="" method="get" id="searchForm">
+			<div class="col-md-3">
+				<select class="form-control" name='sk' id="selectBox">
+			        <option value="">검색옵션</option>
+			        <option value="상품명">상품명</option>
+			        <option value="브랜드">브랜드</option>
+			        <option value="가격">단가</option>
+			        <option value="색상">색상</option>
+		        </select>
+			</div>
+	        <div class="input-group col-md-8" id="normalSearch">
+	            <input type="text" class="form-control" placeholder="검색" name='sv'/>
+	            <span class="input-group-btn">
+	                <button class="btn btn-danger searchBtn" type="button">
+	                    <span class="glyphicon glyphicon-search"></span>
+	                </button>
+	            </span>
+	        </div>
+	        <div class="input-group col-md-8" id="priceSearch" style="display: none;" >
+	            <input type="text" class="form-control" placeholder="가격" name='svprice1'/>
+	            <span class="input-group-btn">~
+	            </span>
+	            <input type="text" class="form-control" placeholder="검색" name='svprice2'/>
+	            <span class="input-group-btn">
+	                <button class="btn btn-danger searchBtn" type="button" >
+	                    <span class="glyphicon glyphicon-search"></span>
+	                </button>
+	            </span>
+	        </div>
+		</form>
+        </div>
+        <div class="row">
+		 <div class="col-lg-12 col-md-12">
+		 	<table class="table">
+		 		<tr>
+		 			<th>상품명</th>
+		 			<th>상품설명</th>
+		 			<th>재고수량</th>
+		 			<th>브랜드</th>
+		 			<th>단가</th>
+		 			<th>색상</th>
+		 			<th>총가격</th>
+		 			<th>입고</th>
+		 			<th>출고</th>
+		 		</tr>
+				<th:block th:if="${proList.size() == 0}">
+					<td colspan="9" style="text-align: center">등록된 상품이 없습니다. 상품을 등록해주세요.</td>
+				</th:block>
+				<th:block th:each="l : ${proList}">
+		 		<tr>
+		 			<td th:text="${l.codeName}"></td>
+		 			<td th:text="${l.description}"></td>
+		 			<td th:text="${l.codecount}"></td>
+		 			<td th:text="${l.codebrand}"></td>
+		 			<td th:text="${l.codeprice}"></td>
+		 			<td th:text="${l.codecolor}"></td>
+		 			<td th:text="${l.totalPrice}"></td>
+		 			<td>
+		 				<button type="button" class="btn btn-info btn-sm insertBtn" data-toggle="modal" data-target="#insertModal" >입고</button>
+					</td>
+		 			<td>
+		 				<button type="button" class="btn btn-success btn-sm outBtn" data-toggle="modal" data-target="#outModal">출고</button>
+		 			</td>
+		 		</tr>
+				</th:block>
+		 	</table>
+		 	<a class="btn btn-warning btn-md right" th:href="@{updateProduct(category=${category},tableName=${tableName})}">수정</a>
+		 	<a class="btn btn-primary btn-md right" th:href="@{middlecategory(category=${category})}" >목록</a>
+		 	<table class="table">
+		 		<tr>
+		 			<th><span>[[${tableName}]]</span>상품 총갯수</th>
+		 			<td th:text="${proAllCount}"></td>
+		 			<th>총재고 가격</th>
+		 			<td th:text="${totalPrice}"></td>
+		 		</tr>
+		 	</table>
+		  </div>
+		</div>
+	</div>
+	<!-- 출고창 모달 -->
+	<div class="modal fade" id="outModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" ><span th:text="${'대분류('+category +')내 중분류 ['+tableName}+'] 의'"></span> 출고 창입니다.</h4>
+	      </div>
+	      <div class="modal-body">
+	      	<div class="container-fluid">
+	      		<div class="row">
+		      		<div class="col-md-8 col-md-offset-2">
+		      			<div class="form-group">
+		      				<label class="control-label" for="plant" id="producNameinout"></label>  
+							<div class="">
+								<form id="outForm" action="/outProduct" method="post">
+								  	<input id="plantinout" name="plant" type="hidden" th:value="${category}">
+								  	<input id="tableNameinout" name="tableName" type="hidden" th:value="${tableName}">
+								  	<input id="codeNameinout" name="codeName" type="hidden" >
+								  	<input id="codecountinout" name="codecount" type="text" placeholder="" class="form-control input-md" autocomplete="off">
+								</form>
+							</div>
+							<p> 현재  갯수 <span id="nowCountinout"></span></p>
+							<p>입고후 갯수<span id="afterCountinout"></span></p>
+		      			</div>
+					</div>
+	      		</div>
+	      	</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+	        <button type="submit" class="btn btn-primary" form="outForm">입력</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- 입고창 모달 -->
+	<div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="myModalLabel"><span th:text="${'대분류('+category +')내 중분류 ['+tableName}+'] 의'"></span> 입고 창입니다.</h4>
+	      </div>
+	      <div class="modal-body">
+	      	<div class="container-fluid">
+	      		<div class="row">
+		      		<div class="col-md-8 col-md-offset-2">
+		      			<div class="form-group">
+		      				<label class="control-label" for="plant" id="producName"></label>  
+							<div class="">
+								<form id="insertForm" action="/insertProduct" method="post">
+								  	<input id="plant" name="plant" type="hidden" th:value="${category}">
+								  	<input id="tableName" name="tableName" type="hidden" th:value="${tableName}">
+								  	<input id="codeName" name="codeName" type="hidden" >
+								  	<input id="codecount" name="codecount" type="text" placeholder="" class="form-control input-md" autocomplete="off">
+								</form>
+							</div>
+							<p> 현재  갯수 <span id="nowCount"></span></p>
+							<p>입고후 갯수<span id="afterCount"></span></p>
+		      			</div>
+					</div>
+	      		</div>
+	      	</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+	        <button type="submit" class="btn btn-primary" form="insertForm">입력</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+<script type="text/javascript" th:inline="javascript">
+$(function(){
+	/* 페이지 로드시 파라미터값 저장 */
+	/*<![CDATA[*/
+	var tableName = /*[[ ${tableName} ]]*/;
+	var category = /*[[ ${category} ]]*/;
+	/*]]*/
+	
+	$('.searchBtn').click(function(){
+		console.log(tableName)
+		console.log(category)
+		var svprice1 = $('#searchForm [name="svprice1"]').val();
+		var svprice2 = $('#searchForm [name="svprice2"]').val();
+		var searchVale = $('#searchForm [name="sv"]').val();
+		var searchKey = $('#searchForm [name="sk"]').val();
+		console.log(searchKey);
+		console.log(searchVale);
+		location.href = "/searchProduct?searchVale="+searchVale+"&searchKey="+searchKey+"&tableName="+tableName+"&category="+category+"&svprice1="+svprice1+"&svprice2="+svprice2;
+	});
+	
+	$('#selectBox').change(function(){
+		$('#searchForm [name="svprice1"]').val('');
+		$('#searchForm [name="svprice2"]').val('');
+		$('#searchForm [name="sv"]').val('');
+		if($(this).val()=='가격'){
+			$('#priceSearch').css("display","flex")
+			$('#normalSearch').css("display","none")
+		}else{
+			$('#priceSearch').css("display","none")
+			$('#normalSearch').css("display","flex")
+		}
+		
+	})
+	var productName =null;
+	var productCount =null;
+	//출고 클릭시
+	$('.outBtn').click(function(){
+		//결과값도 초기화
+		$('#afterCountinout').text('');
+		//입고 눌를때마다 count초기화
+		$('#codecountinout').val('');
+		//입고 누를때마다 nowCount 초기화
+		$('#nowCountinout').text('');
+		//상품명 복사
+		productName = $(this).parents('tr').find('td:eq(0)').text();
+		//클릭한 상품의 갯수 복사
+		productCount = $(this).parents('tr').find('td:eq(2)').text();
+		//modal 창에 상품이름 put
+		$('#producNameinout').text('상품명 : '+productName);
+		$('#nowCountinout').append(productCount);
+		//codeName에 상품이름 input
+		$('#codeNameinout').val(productName);
+	});
+	
+	$('#codecountinout').keyup(function(){
+		$('#afterCountinout').text('');
+		if($(this).val()!=null && $(this).val() != ''){
+			var insertNum = parseInt($(this).val());
+			var numproductCount = parseInt(productCount);
+			var resultNum = numproductCount - insertNum;
+			if(insertNum>numproductCount){
+				$('#afterCountinout').text('');
+				alert('입력숫자는 재고수량을 넘을수없습니다.')
+				$(this).val('');
+				$(this).focus();
+			}else{
+			$('#afterCountinout').text(resultNum);
+			}
+		}
+	})
+	
+	//입고 클릭시
+	$('.insertBtn').click(function(){
+		$('#afterCount').text('');
+		//입고 눌를때마다 count초기화
+		$('#codecount').val('');
+		//입고 누를때마다 nowCount 초기화
+		$('#nowCount').text('');
+		//상품명 복사
+		productName = $(this).parents('tr').find('td:eq(0)').text();
+		//클릭한 상품의 갯수 복사
+		productCount = $(this).parents('tr').find('td:eq(2)').text();
+		//input창 위에 상품이름
+		$('#producName').text('상품명 : '+productName);
+		//현재 갯수에 insert
+		$('#nowCount').append(productCount);
+		//codeName에 상품이름 input
+		$('#codeName').val(productName);
+	});
+	
+	$('#codecount').keyup(function(){
+		$('#afterCount').text('');
+		if($(this).val()!=null && $(this).val() != ''){
+			var insertNum = parseInt($(this).val());
+			var numproductCount = parseInt(productCount);
+			var resultNum = numproductCount + insertNum;
+			$('#afterCount').text(resultNum);
+		}
+	})
+})
+</script>
+</th:block>
+<th:block layout:fragment="customPlugin">
+</th:block>
+</html>

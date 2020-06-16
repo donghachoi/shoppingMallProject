@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<th:block layout:fragment="customHead">
+
+</th:block>
+<th:block layout:fragment="customContents">
+	<div class="container">
+        <div class="row">
+		 <div class="col-lg-12 col-md-12">
+		 	<form action="updateProduct" method="post" id="updateProduct">
+		 	<input type="hidden" th:value="${category}" name="plant">
+		 	<input type="hidden" th:value="${tableName}"name="tableName">
+		 	<table class="table">
+		 		<tr>
+		 			<th>상품명</th>
+		 			<th>수정할 상품명</th>
+		 			<th>상품설명</th>
+		 			<th>재고수량</th>
+		 			<th>브랜드</th>
+		 			<th>단가</th>
+		 			<th>색상</th>
+		 		</tr>
+		 		
+				<th:block th:each="l : ${proList}">
+			 		<tr>
+			 			<td><input class="form-control" th:value="${l.codeName}" 	th:name="|productListVo[${lStat.index}].realCodeName|" readonly="readonly"/></td>
+			 			<td><input class="form-control" th:value="${l.codeName}" 	th:name="|productListVo[${lStat.index}].codeName|"/></td>
+			 			<td><input class="form-control" th:value="${l.description}"	th:name="|productListVo[${lStat.index}].description|"/></td>
+			 			<td><input class="form-control" th:value="${l.codecount}"	th:name="|productListVo[${lStat.index}].codecount|"/></td>
+			 			<td><input class="form-control" th:value="${l.codebrand}"	th:name="|productListVo[${lStat.index}].codebrand|"/></td>
+			 			<td><input class="form-control" th:value="${l.codeprice}"	th:name="|productListVo[${lStat.index}].codeprice|"/></td>
+			 			<td><input class="form-control" th:value="${l.codecolor}"	th:name="|productListVo[${lStat.index}].codecolor|"/></td>
+			 			<td><a class="btn btn-danger btn-sm" th:href="@{/deleteProduct(category=${category},tableName=${tableName},codeName=${l.codeName})}">삭제</a></td>
+			 		</tr>
+				</th:block>
+		 	</table>
+		 	<button class="btn btn-warning btn-md right" for="updateProduct">수정</button>
+	 		</form>
+	 		<a th:href="@{getdetailOfProduct(category=${category},tableName=${tableName})}" class="btn btn-primary btn-md right">목록</a>
+		  </div>
+		</div>
+	</div>
+<script type="text/javascript" th:inline="javascript">
+$(function(){
+	
+})
+</script>
+</th:block>
+<th:block layout:fragment="customPlugin">
+</th:block>
+</html>
