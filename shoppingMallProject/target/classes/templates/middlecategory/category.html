@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<th:block layout:fragment="customHead">
+<style>
+.main-contents{
+
+}
+.item-container{
+	float: left;
+	margin: 10px;
+	padding: 10px;
+}
+ul{
+   list-style:none;
+   }
+</style>
+
+</th:block>
+
+<th:block layout:fragment="customContents">
+<div class="container">
+<div class="row">
+	<form class="form-horizontal" action="InsertBigCategoryPage" method="post" name="dataForm" id="dataForm">
+	<fieldset>
+		<legend>([[${category}]]) 리스트</legend>
+		<!-- 대분류 -->
+		<table class="table table-hover table-striped">
+			<tr class="active">
+				<th>중분류이름</th>
+				<th>중분류 갯수</th>
+			</tr>
+			<tr th:each="mc : ${middlCa}">
+				<td ><a th:text="${mc.tableName}" th:href="@{getdetailOfProduct(category=${mc.plant},tableName=${mc.tableName})}"></a></td>
+				<td th:text="${mc.countOfCategory}"></td>
+			</tr>
+		</table>
+	</fieldset>
+	</form>
+
+</div>
+</div>
+</th:block>
+<th:block layout:fragment="customPlugin">
+</th:block>
+</html>

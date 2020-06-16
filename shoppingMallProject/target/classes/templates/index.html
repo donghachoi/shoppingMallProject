@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default2}">
+<th:block layout:fragment="customHead">
+<style>
+	dl{
+   list-style:none;
+   }
+   .center-block{
+    display: block;
+  margin-left: auto;
+  margin-right: auto;
+   }
+</style>
+</th:block>
+<th:block layout:fragment="customContents">
+
+	<div style="text-align: center;">
+    	<th:block th:if="${session['LoginId']==null}">
+		    <div class="form-group">
+		    	<a id="kakao-login-btn" href="https://kauth.kakao.com/oauth/authorize?client_id=c932284d059f7038774366ddb7ec28d3&redirect_uri=http://localhost:80/login&response_type=code" ><img src="image/kakao_login_medium_wide.png"></a>
+		    </div>
+		    <div class="form-group">
+		    	<a id="login-form-btn" href="javascript:loginFormWithKakao()">
+				  <img src="image/kakaoanotherId.jpg" style=" height: 45;"/>
+				  </a>
+		    </div>
+    	</th:block>
+    </div>
+<script src="jquery/kakaoSDK.js"></script>
+<script type='text/javascript'>
+Kakao.init('c932284d059f7038774366ddb7ec28d3')
+function loginFormWithKakao() {
+  Kakao.Auth.loginForm({
+	redirectUri: 'http://localhost:80/login',
+    success: function(authObj) {
+      alert(JSON.stringify(authObj))
+    },
+    fail: function(err) {
+      alert(JSON.stringify(err))
+    },
+  })
+}
+</script>
+</th:block>
+
+<th:block layout:fragment="customPlugin">
+</th:block>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default2}">
+<th:block layout:fragment="customHead">
+<style>
+	
+</style>
+</th:block>
+
+<th:block layout:fragment="customContents">
+<div class="container">
+<div class="row">
+	<form class="form-horizontal" action="InsertBigCategoryPage" method="post" name="dataForm" id="dataForm">
+	<fieldset>
+		<legend>대분류 등록화면</legend>
+		<!-- 대분류 -->
+		<div class="form-group">
+			<label class="col-lg-2 col-md-2 control-label" for="plant">대분류 이름</label>  
+			<div class="col-lg-9 col-md-9">
+			  	<input id="plant" name="plant" type="text" placeholder="" class="form-control input-md">
+			  	<p>ex) 의류,가전,핸드폰</p>
+			</div>
+		</div>
+		
+		<div id="realone">
+			<div class="form-group" >
+		  	  <label class="col-md-2 control-label" for="tableName">중분류 이름</label>
+			  <div class="col-md-9 plus-input">
+			  <input id="tableName" name="tableNameVoList[0].tableName" type="text" placeholder="" class="form-control input-md">
+			  <p>ex) 중분류 이름 의류 - 반팔,긴팔,카고바지,등등</p>
+			  </div>
+			</div>
+			
+			<!-- 중분류 설명 -->
+			<div class="form-group">
+			  <label class="col-md-2 control-label" for="description">중분류 설명</label>
+			  <div class="col-md-9">                     
+			    <textarea class="form-control" id="description" name="tableNameVoList[0].description"></textarea>
+			    <button type="button" class="btn btn-primary" id="addBtn"   style="float: right">추가</button>
+			  	<button type="button" class="btn btn-danger"  id="deletBtn" style="float: right">제거</button>
+			  </div>
+			</div>
+		</div>
+		<!-- 중분류 -->
+		<div class="form-group">
+			<div class="col-md-7"> 
+				<button type="submit" class="btn btn-primary right btn-lg">등록</button>
+			</div>
+		</div>
+	</fieldset>
+	</form>
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		
+		//중분류 추가 script
+		var inputHTML ="";
+		var i = 1;
+		$('#addBtn').click(function(){
+			//insert를 위한 네임값 증가
+			var i = $('.clone').length+1;
+			inputHTML += '<div class="clone">';
+			inputHTML += '<div class="form-group">';
+			inputHTML += '<label class="col-md-2 control-label" for="tableNameForAdd">중분류 추가 '
+			inputHTML += i;
+			inputHTML += '</label><div class="col-md-9 plus-input">';
+			inputHTML += '<input id="tableNameForAdd"  name="tableNameVoList[';
+			inputHTML += i;
+			inputHTML += '].tableName" type="text" placeholder="" class="form-control input-md"></div></div>';
+			inputHTML += '<div class="form-group"><label class="col-md-2 control-label" for="description">중분류 설명</label>';
+			inputHTML += '<div class="col-md-9"><textarea class="form-control" id="description" name="tableNameVoList[';
+			inputHTML += i;
+			inputHTML += '].description"></textarea></div></div></div>';
+			
+			if($('.clone').length){
+				$('.clone:last').after(inputHTML);
+				
+			}else{						//clone이없을때
+				
+				$('#realone').after(inputHTML)
+			}
+			inputHTML ="";
+			//중분류 삭제 script
+			
+		})
+		$('#deletBtn').click(function(){
+				$('.clone:last').remove()
+		})
+		
+	})
+</script>
+</th:block>
+
+
+<th:block layout:fragment="customPlugin">
+</th:block>
+</html>

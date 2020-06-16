@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<th:block layout:fragment="customHead">
+<style>
+	dl{
+   list-style:none;
+   }
+</style></th:block>
+<th:block layout:fragment="customContents">
+<div class="container">
+	<form class="form-horizontal" action="/Insertproduct" method="post">
+	<input type="hidden" th:value="${category}" name ="plant"/>
+	<fieldset>
+	<legend>상품재고등록 화면</legend>
+	<!-- 중분류 -->
+	<div class="form-group">
+	  <label class="col-md-4 control-label" for="tableName">중분류</label>
+	  <div class="col-md-4">                     
+	  	<select class="form-control input-md" name="tableName" id="tableName">
+	  	<th:block th:each="mc : ${middlCa}">
+		  <option >[[${mc.tableName}]]</option>
+		</th:block>
+		</select>
+	  </div>
+	</div>
+	
+	<!-- 상품이름-->
+	<div class="form-group">
+	  <label class="col-md-4 control-label" for="codeName">상품이름</label>  
+	  <div class="col-md-4">
+	  <input id="codeName" name="codeName" type="text" placeholder="" class="form-control input-md">
+	  </div>
+	</div>
+	<!-- 상품설명 -->
+	<div class="form-group">
+	  <label class="col-md-4 control-label" for="description">상품설명</label>
+	  <div class="col-md-4">                     
+	    <textarea class="form-control" id="description" name="description"></textarea>
+	  </div>
+	</div>
+	
+	<!-- 상품 갯수 -->
+	<div class="form-group">
+	  <label class="col-md-4 control-label" for="codecount">갯수</label>
+	  <div class="col-md-4">                     
+	  	<input id="codecount" name="codecount" type="text" placeholder="" class="form-control input-md">
+	  </div>
+	</div>
+	<!-- 브랜드 -->
+	<div class="form-group">
+	  <label class="col-md-4 control-label" for="codebrand">브랜드</label>
+	  <div class="col-md-4">           
+	  	<select class="form-control input-md" name="codebrand" id="codebrand"> 
+		  <option value="브랜드1" selected="selected">브랜드1</option>
+		  <option value="브랜드2">브랜드2</option>
+		</select>
+	  </div>
+	</div>
+	<!-- 상품 가격 -->
+	<div class="form-group">
+	  <label class="col-md-4 control-label" for="codeprice">가격</label>
+	  <div class="col-md-4">                     
+	  	<input id="codeprice" name="codeprice" type="text" placeholder="" class="form-control input-md">
+	  	
+	  </div>
+	</div>
+	<!-- 색상 -->
+	<div class="form-group">
+	  <label class="col-md-4 control-label" for="codecolor">색상</label>
+	  <div class="col-md-4">           
+	  	<select class="form-control input-md" name="codecolor" id="codecolor"> 
+		  <option value="검정색" selected="selected">검정색</option>
+		  <option value="흰색">흰색</option>
+		  <option value="노랑색">노랑색</option>
+		</select>
+	  </div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-8"> 
+			<button type="submit" class="btn btn-primary right btn-lg" id="insertBtn"> 입력</button>
+		</div>
+	</div>
+	</fieldset>
+	</form>
+</div>
+<script>
+$(function(){
+	var waringHTML = "";
+	
+	
+	$('#insertBtn').click(function(){
+		var codeCount = $('#codecount').val();
+		var codePrice = $('#codeprice').val();
+		$('span').empty('.warning')
+		if(codeCount=='' || codeCount==null){
+			waringHTML = "";
+			waringHTML += '<span class="warning" style="color : red">갯수를 입력해주세요.</span>';
+			$('#codecount').after(waringHTML);
+			$('#codecount').focus();
+			return false;
+		}
+		else if(codePrice=='' || codePrice==null){
+			waringHTML = "";
+			waringHTML += '<span class="warning" style="color : red">가격을 입력해주세요.</span>';
+			$('#codeprice').after(waringHTML);
+			$('#codeprice').focus();
+			return false;
+		}
+		
+		
+	})
+	
+	waringHTML = "";
+	waringHTML += '<span class="warning" style="color : red">숫자만 입력해주세요.</span>';
+	$('#codecount').keyup(function(){
+		$('span').empty('.warning')
+		if(isNaN($(this).val())){
+			$(this).after(waringHTML);
+			$(this).val('')
+		}else{
+			
+		}
+	})
+	$('#codeprice').keyup(function(){
+		$('span').empty('.warning')
+		if(isNaN($(this).val())){
+			$(this).after(waringHTML);
+			$(this).val('')
+		}else{
+		}
+	})
+})
+</script>
+</th:block>
+<th:block layout:fragment="customPlugin">
+</th:block>
+</html>

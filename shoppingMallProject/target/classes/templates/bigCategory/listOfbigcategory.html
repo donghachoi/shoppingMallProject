@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default2}">
+<th:block layout:fragment="customHead">
+<style>
+	
+</style>
+</th:block>
+
+<th:block layout:fragment="customContents">
+<div class="container">
+<div class="row">
+	<form class="form-horizontal" action="InsertBigCategoryPage" method="post" name="dataForm" id="dataForm">
+	<fieldset>
+		<legend>카테고리 리스트</legend>
+		<!-- 대분류 -->
+		<table class="table table-hover table-striped">
+			<tr class="active">
+				<th>큰카테고리이름</th>
+				<th>중분류 종류</th>
+				<th>비고</th>
+				<th>관리</th>
+			</tr>
+			<th:block th:each="bc : ${categoryList}" th:with="plant=${bc.plant}">
+				<!-- <th:block th:each="num : ${#numbers.sequence(1,bcStat.size)}">
+					<th:block th:if="${bcStat.index == numStat.count}">
+						<p>check</p>
+						<span th:text="${bc.plant}"></span>
+					</th:block>
+				</th:block> -->
+				
+			<tr>
+				<td><a th:href="@{/middlecategory(category=${bc.plant})}" th:text="${bc.plant}"></a></td>
+				<td><span th:text="${bc.tableName}"></span></td>
+				<td></td>
+				<td><a th:href="@{/updateBigcategory(category=${bc.plant})}" class="update">관리</a></td>
+			</tr>
+			</th:block>
+		</table>
+	</fieldset>
+	</form>
+</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		
+		$('.update').addClass('out');
+		$('.update').hover(function(){
+			$(this).addClass('over');
+		},function(){
+			$(this).removeClass('over');
+		});
+		
+		//중분류 추가 script
+		var inputHTML ="";
+		var i = 1;
+		$('#addBtn').click(function(){
+			//insert를 위한 네임값 증가
+			var i = $('.clone').length+1;
+			inputHTML += '<div class="form-group clone">';
+			inputHTML += '<label class="col-md-4 control-label" for="tableNameForAdd">중분류 추가 '
+			inputHTML += i;
+			inputHTML += '</label><div class="col-md-4 plus-input">';
+			inputHTML += '<input id="tableNameForAdd"  name="tableNameVoList[';
+			inputHTML += i;
+			inputHTML += '].tableName" type="text" placeholder="" class="form-control input-md">';
+			inputHTML += '</div></div>';
+			if($('.clone').length){
+				$('.clone:last').after(inputHTML);
+				
+			}else{						//clone이없을때
+				
+				$('#realone').after(inputHTML)
+				
+			}
+			inputHTML ="";
+			//중분류 삭제 script
+			
+		})
+		$('#deletBtn').click(function(){
+				$('.clone:last').remove()
+			})
+	})
+</script>
+</th:block>
+
+
+<th:block layout:fragment="customPlugin">
+</th:block>
+</html>
